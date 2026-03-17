@@ -1,0 +1,103 @@
+# 🚕 NYC Taxi Fare Prediction
+
+> Kaggle Competition | XGBoost Regressor | **R² Score: 0.9636**
+
+---
+
+## 📌 Problem Statement
+
+Predict the **total fare amount** for NYC taxi rides based on trip details such as pickup/dropoff time, distance, passenger count, and payment type.
+
+---
+
+## 📁 Project Structure
+
+```
+├── train.csv          # Training data (~10,000 records)
+├── test.csv           # Test data (1,500 records)
+├── train.ipynb        # Main notebook (preprocessing + training)
+├── submission.csv     # Final predictions for Kaggle submission
+└── requirements.txt   # Python dependencies
+```
+
+---
+
+## 🔧 Installation
+
+```bash
+pip install -r requirements.txt
+```
+
+**requirements.txt**
+```
+pandas
+numpy
+scikit-learn
+xgboost
+```
+
+---
+
+## 🚀 How to Run
+
+1. Clone this repo and place `train.csv` and `test.csv` in the root directory
+2. Open `train.ipynb` in Jupyter or VS Code
+3. Run All cells
+4. `submission.csv` will be generated automatically
+5. Upload `submission.csv` to Kaggle
+
+---
+
+## 🛠️ Feature Engineering
+
+| Feature | Description |
+|---|---|
+| `trip_duration_minutes` | Dropoff − Pickup time in minutes |
+| `speed` | `trip_distance / (trip_duration_minutes + 0.001)` |
+| `pickup_hour` | Hour of day from pickup timestamp |
+| `pickup_dayofweek` | Day of week (0 = Mon, 6 = Sun) |
+| `payment_type` | One-hot encoded |
+| `store_and_fwd_flag` | Mapped Y→1 / N→0 |
+
+**Outlier filtering (training only):**
+- `trip_duration_minutes`: between 0 and 180
+- `trip_distance`: between 0 and 100
+- `total_amount`: between 2 and 400
+
+---
+
+## 🤖 Model
+
+**XGBoost Regressor** with the following hyperparameters:
+
+| Parameter | Value |
+|---|---|
+| `n_estimators` | 600 |
+| `learning_rate` | 0.05 |
+| `max_depth` | 8 |
+| `subsample` | 0.8 |
+| `colsample_bytree` | 0.8 |
+| `random_state` | 42 |
+
+**Training strategy:** 80/20 train-validation split for evaluation, then retrained on full data for final predictions.
+
+---
+
+## 📊 Results
+
+| Metric | Score |
+|---|---|
+| Validation R² | **0.9636** |
+| Test Predictions | 1,500 rows |
+
+---
+
+## 📄 Submission Format
+
+```
+id,total_amount
+0,16.38
+1,28.86
+2,26.10
+...
+```
